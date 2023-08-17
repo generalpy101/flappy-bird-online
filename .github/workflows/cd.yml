@@ -25,4 +25,4 @@ jobs:
           git pull origin main 
           git status
           cd frontend
-          pm2 start npm --name "flappy-frontend" -- run "dev"
+          pm2 startOrReload ecosystem.config.js
