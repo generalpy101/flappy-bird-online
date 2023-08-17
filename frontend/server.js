@@ -24,7 +24,10 @@ if (ENV === 'development') {
     app.use(morgan('combined'))
 }
 
+// Add static files path
 app.use('/static', express.static(STATIC_PATH))
+// Add json parser
+app.use(express.json())
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(PUBLIC_PATH, 'index.html'))
