@@ -7,7 +7,7 @@ const path = require('path')
 
 dotenv.config()
 
-const HOST = process.env.BASE_URL || 'localhost'
+const HOST = process.env.HOST || 'localhost'
 const PORT = process.env.PORT || 3000
 
 const BASE_PATH = path.join(__dirname)
