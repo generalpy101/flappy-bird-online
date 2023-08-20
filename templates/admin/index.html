@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto mt-8">
+    <h1 class="text-2xl font-semibold mb-4">Lobby Listing (Admin)</h1>
+
+    <!-- Create Lobby Button -->
+    <button id='create-lobby-button' class="bg-blue-500 text-white px-4 py-2 rounded mb-4">Create Lobby</button>
+
+    <div class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lobbies">
+        {% for lobby in lobbies %}
+        <div id="lobby-card-{{ lobby.id }}" class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-lg font-semibold mb-2">{{ lobby.name }}</h2>
+            <p class="mt-4">
+                Players: <span class="player-count">{{ lobby.users|length }}</span>
+            </p>
+            <p class="mt-2">
+                Status: {% if lobby.is_active %}Active{% else %}Inactive{% endif %}
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Modal for creating a new lobby -->
+    <div id="create-lobby-modal"
+        class="hidden fixed inset-0 z-50 overflow-auto bg-gray-500 bg-opacity-75 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-md p-6 w-1/2">
+            <h2 class="text-lg font-semibold mb-2">Create New Lobby</h2>
+            <form id="create-lobby-form" action="/admin/create_lobby" method="POST">
+                <label for="lobby-name">Lobby Name:</label>
+                <input type="text" id="lobby-name" name="lobby_name" class="border rounded px-2 py-1 w-full">
+                <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Create Lobby</button>
+            </form>
+            <button id="close-modal-button" class="mt-4 text-gray-600 hover:text-gray-800">Close</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+    const LobbyCard = ({id, is_active, name, players_count}) => {
+        return `
+        <div id="lobby-card-${ id }" class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-lg font-semibold mb-2">${name}</h2>
+            <p class="mt-4">
+                Players: <span class="player-count">${players_count}</span>
+            </p>
+            <p class="mt-2">
+                Status: ${is_active ? 'Active' : 'Inactive'}
+            </p>
+        </div>
+        `
+    }
+
+    function updateLobbyInfo() {
+        // Make call to admin route to update player info
+        fetch(`/admin/update_lobby_list`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                cards = ""
+                for (const lobby of data) {
+                    const {id, is_active, name, players_count} = lobby
+                    cards += LobbyCard({id, is_active, name, players_count})
+                }
+                document.querySelector('.lobbies').innerHTML = cards
+            });
+    }
+    setInterval(updateLobbyInfo, 1000);
+
+    // Show the modal when the "Create Lobby" button is clicked
+    const createLobbyButton = document.getElementById('create-lobby-button');
+    const createLobbyModal = document.getElementById('create-lobby-modal');
+    const closeModalButton = document.getElementById('close-modal-button');
+
+    createLobbyButton.addEventListener('click', () => {
+        createLobbyModal.classList.remove('hidden');
+    });
+
+    closeModalButton.addEventListener('click', () => {
+        createLobbyModal.classList.add('hidden');
+    });
+
+    // Handle form submission
+    const createLobbyForm = document.getElementById('create-lobby-form');
+    createLobbyForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        fetch('/admin/lobby/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: document.getElementById('lobby-name').value
+            })
+        }).then(response => response.json()).then(result => {
+            console.log(result);
+            createLobbyModal.classList.add('hidden');
+        });
+    });
+</script>
+{% endblock %}
