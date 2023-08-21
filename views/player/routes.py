@@ -46,9 +46,9 @@ def game():
     if current_user not in lobby.users:
         flash("You are not in this lobby", "error")
         return redirect(url_for("player.join_lobby"))
-    if len([score for score in current_user.scores if score.lobby_id == lobby_id]) >= 3:
-        flash("You are only allowed to play 3 games per lobby", "info")
-        return redirect(url_for("player.join_lobby"))
+    # if len([score for score in current_user.scores if score.lobby_id == lobby_id]) >= 3:
+    #     flash("You are only allowed to play 3 games per lobby", "info")
+    #     return redirect(url_for("player.join_lobby"))
     
     # Get user's best score
     best_score = current_user.get_best_score(lobby_id=lobby_id)
@@ -82,8 +82,8 @@ def submit_score():
         lobby_id = int(lobby_id)
 
         # Check if user has already played 3 games
-        if len([score for score in current_user.scores if score.lobby_id == lobby_id]) >= 3:
-            return {"error": "User has already played 3 games"}, 400
+        # if len([score for score in current_user.scores if score.lobby_id == lobby_id]) >= 3:
+        #     return {"error": "User has already played 3 games"}, 400
 
         # Create score
         score = Score(score=score, player_id=current_user.id, lobby_id=lobby.id)
