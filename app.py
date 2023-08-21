@@ -32,6 +32,11 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 
+@login_manager.unauthorized_handler
+def unauthorized_callback():
+    return redirect(url_for("auth.login")
+
+
 @app.route("/")
 @login_required
 def index():
@@ -39,8 +44,6 @@ def index():
         return redirect(url_for("admin.list_lobbies"))
     else:
         return redirect(url_for("player.join_lobby"))
-    return "Hello World!"
-
 
 @app.route("/test")
 def test():
