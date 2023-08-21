@@ -24,5 +24,11 @@ jobs:
           cd ~/projects/flappy-bird-online
           git pull origin main 
           git status
+          # Check if virtualenv exists
+          if [ ! -d "venv" ]; then
+            virtualenv venv
+          fi
+          source venv/bin/activate
+          pip install -r requirements.txt
           # cd frontend
           # pm2 startOrReload ecosystem.config.js

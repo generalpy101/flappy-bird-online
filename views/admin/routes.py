@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required, current_user
 
 from models.lobby import Lobby
-from models.user import User
 from models import db
 
 from views.auth.utils import admin_required
@@ -50,7 +49,7 @@ def update_lobbies_list():
     
     for lobby in lobbies:
         # Get the players in the lobby
-        players = lobby.users
+        players = lobby.players
         
         # Create a dictionary of the lobby's data
         lobby_data = {
@@ -78,16 +77,14 @@ def update_players_list():
     lobby = Lobby.query.filter(Lobby.id == lobby_id, Lobby.is_active == True).first()
     
     # Get the players in the lobby
-    players = lobby.users
+    players = lobby.players
     
     for player in players:
         # Create a dictionary of the player's data
-        score = player.calculate_average_score(lobby_id=lobby_id)
         best_score = player.get_best_score(lobby_id=lobby_id)
         player_data = {
             'id': player.id,
-            'username': player.name,
-            'score': score,
+            'username': player.username,
             'best_score': best_score
         }
         

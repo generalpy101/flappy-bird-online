@@ -5,10 +5,10 @@ img.src = "https://i.ibb.co/Q9yv5Jk/flappy-bird-set.png";
 
 // general settings
 let gamePlaying = false;
-const gravity = 0.45;
+const gravity = 0.35;
 const speed = 3.2;
 const size = [51, 36];
-const jump = -11.5;
+const jump = -8.5;
 const cTenth = canvas.width / 10;
 
 let index = 0,
@@ -131,7 +131,8 @@ const render = () => {
           },
           body: JSON.stringify({
             score: currentScore,
-            lobby_id: LOBBY_ID
+            lobby_id: LOBBY_ID,
+            player_id: PLAYER_ID,
           }),
         }).then((res) => res.json()).then((data) => {
           if (data.error) {

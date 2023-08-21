@@ -1,12 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="container mx-auto mt-8">
-        <h1 class="text-2xl font-semibold mb-4">Join a Lobby</h1>
-        <form id="join-lobby-form" action="/player/join_lobby" method="POST">
-            <label for="lobby-id" class="block font-semibold mb-2">Enter Lobby ID:</label>
-            <input type="text" id="lobby-id" name="lobby_id" class="border rounded px-2 py-1 w-full">
-            <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Join Lobby</button>
-        </form>
-    </div>
+<div class="container mx-auto mt-8">
+    <h1 class="text-2xl font-semibold mb-4">Join a Lobby</h1>
+    <form id="join-lobby-form" action="/player/join_lobby" method="POST" class="max-w-xs mx-auto">
+        <label for="lobby-id" class="block font-semibold mb-2">Enter Lobby ID:</label>
+        <input type="text" id="lobby-id" name="lobby_id" class="border rounded px-3 py-2 w-full">
+
+        <label for="player-reg-id" class="block font-semibold mt-3 mb-2">Player Registration ID:</label>
+        <input type="text" id="player-reg-id" name="reg_id" class="border rounded px-3 py-2 w-full">
+
+        <label for="player-username" class="block font-semibold mt-3 mb-2">Player Username:</label>
+        <input type="text" id="player-username" name="username" class="border rounded px-3 py-2 w-full">
+
+        <button type="submit" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+            Join Lobby
+        </button>
+    </form>
+
+</div>
 {% endblock %}

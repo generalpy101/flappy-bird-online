@@ -3,7 +3,7 @@ from . import db
 
 class Score(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    player_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    player_id = db.Column(db.Integer, db.ForeignKey("player.id"), nullable=False)
     lobby_id = db.Column(db.Integer, nullable=False)
     score = db.Column(db.Integer, nullable=False)
     is_best = db.Column(db.Boolean, nullable=False, default=False)

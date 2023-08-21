@@ -29,16 +29,14 @@ Lobby - {{ lobby.name }}
             <thead>
                 <tr>
                     <th class="px-4 py-2">Username</th>
-                    <th class="px-4 py-2">Average Score</th>
                     <th class="px-4 py-2">Best Score</th>
                 </tr>
             </thead>
             <tbody id="user-table-body">
-                {% for user in lobby.users %}
+                {% for user in lobby.players %}
                 <tr>
-                    <td class="px-4 py-2">{{ user.name }}</td>
-                    <td class="px-4 py-2">{{ user.calculate_average_score(lobby.id) }}</td>
-                    <td class="px-4 py-2">{{ user.get_best_score(lobby.id) }}</td>
+                    <td class="px-4 py-2 text-center">{{ user.username }}</td>
+                    <td class="px-4 py-2 text-center">{{ user.get_best_score(lobby.id) }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -64,9 +62,8 @@ Lobby - {{ lobby.name }}
                 data.forEach(user => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                    <td class="px-4 py-2">${user.username}</td>
-                    <td class="px-4 py-2">${user.score}</td>
-                    <td class="px-4 py-2">${user.best_score}</td>
+                    <td class="px-4 py-2 text-center">${user.username}</td>
+                    <td class="px-4 py-2 text-center">${user.best_score}</td>
                 `;
                     tableBody.appendChild(row);
                 });
