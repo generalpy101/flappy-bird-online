@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_login import login_user
+from flask_login import login_user, logout_user, login_required
 
 from .forms import LoginForm, RegistrationForm
 from models.user import User
@@ -22,12 +22,12 @@ def login():
             
             if not next_page:
                 if user.is_admin:
-                   next_page = url_for("admin.index")
+                   next_page = url_for("admin.list_lobbies")
                 else:
                      next_page = url_for("player.join_lobby")
             return redirect(next_page or url_for("index"))
         else:
-            flash("Login failed. Please check your credentials.")
+            flash("Login failed. Please check your credentials.", "error")
     return render_template("auth/login.html", form=form)
 
 
@@ -39,11 +39,18 @@ def register():
         new_user.password = form.password.data
         # Check if username already exists
         if User.query.filter_by(name=form.name.data).first():
-            flash("Username already exists.")
+            flash("Username already exists." , "error")
             return redirect(url_for("auth.register"))
         db.session.add(new_user)
         db.session.commit()
-        flash("Registration successful. You can now log in.")
+        flash("Registration successful. You can now log in.", "success")
         return redirect(url_for("auth.login"))
 
     return render_template("auth/register.html", form=form)
+
+
+@auth_bp.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("auth.login"))

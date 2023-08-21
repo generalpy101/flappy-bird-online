@@ -10,11 +10,15 @@
 <header>
   <h1>Floppy Bird</h1>
   <div class="score-container">
-    <div id="bestScore"></div>
+    <div id="bestScore">{{best_score}}</div>
     <div id="currentScore"></div>
   </div>
 </header>
 
 <canvas id="canvas" width="431" height="600"></canvas>
+<script>
+  const LOBBY_ID = "{{lobby_id}}";
+  const CURRENT_BEST = "{{best_score}}";
+</script>
 <script src="/static/js/game/script.js"></script>
 {% endblock %}

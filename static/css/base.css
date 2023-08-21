@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+nav {
+  font-family: 'Press Start 2P', cursive;
+}
+
+/* CSS or Tailwind classes for message types */
+.info {
+    background-color: #2196F3; /* Blue for info messages */
+    color: white;
+}
+
+.success {
+    background-color: #4CAF50; /* Green for success messages */
+    color: white;
+}
+
+.warning {
+    background-color: #FFC107; /* Yellow for warning messages */
+    color: black;
+}
+
+.error {
+    background-color: #F44336; /* Red for error messages */
+    color: white;
+}

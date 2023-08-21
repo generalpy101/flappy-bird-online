@@ -9,15 +9,17 @@
 
     <div class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lobbies">
         {% for lobby in lobbies %}
-        <div id="lobby-card-{{ lobby.id }}" class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-lg font-semibold mb-2">{{ lobby.name }}</h2>
-            <p class="mt-4">
-                Players: <span class="player-count">{{ lobby.users|length }}</span>
-            </p>
-            <p class="mt-2">
-                Status: {% if lobby.is_active %}Active{% else %}Inactive{% endif %}
-            </p>
-        </div>
+        <a href="{{ url_for('admin.show_lobby', lobby_id=lobby.id) }}">
+            <div id="lobby-card-{{ lobby.id }}" class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-lg font-semibold mb-2">{{ lobby.name }}</h2>
+                <p class="mt-4">
+                    Players: <span class="player-count">{{ lobby.users|length }}</span>
+                </p>
+                <p class="mt-2">
+                    Status: {% if lobby.is_active %}Active{% else %}Inactive{% endif %}
+                </p>
+            </div>
+        </a>
         {% endfor %}
     </div>
 
@@ -41,17 +43,22 @@
 {% block scripts %}
 <script>
 
-    const LobbyCard = ({id, is_active, name, players_count}) => {
+    const lobbyUrl = "{{ url_for('admin.show_lobby', lobby_id=-1) }}"
+
+    const LobbyCard = ({ id, is_active, name, players_count }) => {
+        const url = lobbyUrl.replace('-1', id);
         return `
-        <div id="lobby-card-${ id }" class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-lg font-semibold mb-2">${name}</h2>
-            <p class="mt-4">
-                Players: <span class="player-count">${players_count}</span>
-            </p>
-            <p class="mt-2">
-                Status: ${is_active ? 'Active' : 'Inactive'}
-            </p>
-        </div>
+        <a href="${url}">
+            <div id="lobby-card-${id}" class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-lg font-semibold mb-2">${name}</h2>
+                <p class="mt-4">
+                    Players: <span class="player-count">${players_count}</span>
+                </p>
+                <p class="mt-2">
+                    Status: ${is_active ? 'Active' : 'Inactive'}
+                </p>
+            </div>
+        </a>    
         `
     }
 
@@ -63,8 +70,8 @@
                 console.log(data)
                 cards = ""
                 for (const lobby of data) {
-                    const {id, is_active, name, players_count} = lobby
-                    cards += LobbyCard({id, is_active, name, players_count})
+                    const { id, is_active, name, players_count } = lobby
+                    cards += LobbyCard({ id, is_active, name, players_count })
                 }
                 document.querySelector('.lobbies').innerHTML = cards
             });

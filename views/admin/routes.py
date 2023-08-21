@@ -10,7 +10,7 @@ from views.auth.utils import admin_required
 admin_bp = Blueprint("admin", __name__, template_folder="templates")
 
 
-@admin_bp.route("/lobbies", methods=["GET"])
+@admin_bp.route("/lobby", methods=["GET"])
 @admin_required
 def list_lobbies():
     lobbies = Lobby.query.all()
@@ -78,14 +78,17 @@ def update_players_list():
     lobby = Lobby.query.filter(Lobby.id == lobby_id, Lobby.is_active == True).first()
     
     # Get the players in the lobby
-    players = lobby.players
+    players = lobby.users
     
     for player in players:
         # Create a dictionary of the player's data
+        score = player.calculate_average_score(lobby_id=lobby_id)
+        best_score = player.get_best_score(lobby_id=lobby_id)
         player_data = {
             'id': player.id,
-            'username': player.username,
-            'score': player.score
+            'username': player.name,
+            'score': score,
+            'best_score': best_score
         }
         
         # Add the player's data to the player list

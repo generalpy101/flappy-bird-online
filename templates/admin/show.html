@@ -1,24 +1,50 @@
 {% extends 'base.html' %}
 
+{% block head%}
+<!-- Add these script tags to your template -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+{% endblock %}
+
+
+{%block title%}
+Lobby - {{ lobby.name }}
+{%endblock%}
+
 {% block content %}
 <div class="container mx-auto mt-8">
     <h1 class="text-2xl font-semibold mb-4">{{ lobby.name }} Info</h1>
 
     <div class="bg-white rounded-lg shadow-md p-6">
         <h2 class="text-lg font-semibold mb-2">Lobby Details</h2>
-        <p class="text-gray-600">{{ lobby.description }}</p>
-        <p class="mt-4">Players: {{ lobby.players|length }}</p>
+        <p class="text-gray-600 font-bold">ID: {{ lobby.id }}</p>
+        <p class="mt-4">Players: {{ lobby.users|length }}</p>
         <p class="mt-2">Status: {% if lobby.is_active %}Active{% else %}Inactive{% endif %}</p>
     </div>
 
     <div class="bg-white rounded-lg shadow-md p-6 mt-4">
         <h2 class="text-lg font-semibold mb-2">User List</h2>
-        <ul id="user-list">
-            {% for user in lobby.players %}
-            <li>{{ user.name }}</li>
-            {% endfor %}
-        </ul>
+        <table id="user-table" class="w-full">
+            <thead>
+                <tr>
+                    <th class="px-4 py-2">Username</th>
+                    <th class="px-4 py-2">Average Score</th>
+                    <th class="px-4 py-2">Best Score</th>
+                </tr>
+            </thead>
+            <tbody id="user-table-body">
+                {% for user in lobby.users %}
+                <tr>
+                    <td class="px-4 py-2">{{ user.name }}</td>
+                    <td class="px-4 py-2">{{ user.calculate_average_score(lobby.id) }}</td>
+                    <td class="px-4 py-2">{{ user.get_best_score(lobby.id) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+
 </div>
 {%endblock%}
 
@@ -29,9 +55,27 @@
         fetch(`/admin/update_player_list?lobby_id={{ lobby.id}}`)
             .then(response => response.json())
             .then(data => {
-                console.log(data);
+                // Sort users according to scores
+                data.sort((a, b) => b.score - a.score);
+                const tableBody = document.getElementById('user-table-body');
+                tableBody.innerHTML = ''; // Clear existing rows
+
+                // Create and append new table rows based on fetched data
+                data.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <td class="px-4 py-2">${user.username}</td>
+                    <td class="px-4 py-2">${user.score}</td>
+                    <td class="px-4 py-2">${user.best_score}</td>
+                `;
+                    tableBody.appendChild(row);
+                });
             });
     }
     setInterval(updateUsers, 1000);
+
+    $(document).ready(function () {
+        $('#user-table').DataTable();
+    });
 </script>
 {%endblock%}

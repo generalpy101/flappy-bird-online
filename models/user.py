@@ -39,6 +39,34 @@ class User(db.Model, UserMixin):
     def check_password(self, plaintext_password):
         return bcrypt.check_password_hash(self._password, plaintext_password)
 
+    def calculate_average_score(self, lobby_id):
+        # Average score of the user in a lobby
+        if not self.scores:
+            return 0
+        lobby_id = int(lobby_id)
+        
+        scores = [score.score for score in self.scores if score.lobby_id == lobby_id]
+        try:
+            average_score = sum(scores) / len(scores)
+        except:
+            average_score = 0
+        return average_score
+    
+    def get_best_score(self, lobby_id):
+        if not self.scores:
+            return 0
+        
+        lobby_id = int(lobby_id)
+
+        lobby_scores = [score.score for score in self.scores if score.lobby_id == lobby_id]
+        
+        try:
+            best_score = max(lobby_scores)
+        except Exception as e:
+            print(e)
+            best_score = 0
+        return best_score
+    
     def to_dict(self):
         return {
             "id": self.id,

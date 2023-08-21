@@ -1,9 +1,9 @@
 import os
 
-from flask import Flask
+from flask import Flask, redirect, url_for
 from dotenv import load_dotenv
 from flask_migrate import Migrate
-from flask_login import LoginManager
+from flask_login import LoginManager, login_required, current_user
 
 from models import db
 from models.user import User
@@ -30,6 +30,16 @@ app.app_context().push()
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
+
+
+@app.route("/")
+@login_required
+def index():
+    if current_user.is_admin:
+        return redirect(url_for("admin.list_lobbies"))
+    else:
+        return redirect(url_for("player.join_lobby"))
+    return "Hello World!"
 
 
 @app.route("/test")
