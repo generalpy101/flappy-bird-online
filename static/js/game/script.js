@@ -134,7 +134,9 @@ const render = () => {
             lobby_id: LOBBY_ID
           }),
         }).then((res) => res.json()).then((data) => {
-          console.log(data);
+          if (data.error) {
+            window.location.href = "/player/join_lobby";
+          }
         });
         setup();
       }
