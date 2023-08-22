@@ -7,7 +7,10 @@ class Lobby(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True, nullable=False)
     players = db.relationship(
-        "Player", secondary=player_lobby_association, back_populates="lobbies", lazy=True
+        "Player",
+        secondary=player_lobby_association,
+        back_populates="lobbies",
+        lazy=True,
     )
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 

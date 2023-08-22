@@ -27,6 +27,7 @@ Lobby - {{ lobby.name }}
         <table id="user-table" class="w-full">
             <thead>
                 <tr>
+                    <th class="px-4 py-2">Registration ID</th>
                     <th class="px-4 py-2">Username</th>
                     <th class="px-4 py-2">Best Score</th>
                 </tr>
@@ -34,8 +35,9 @@ Lobby - {{ lobby.name }}
             <tbody id="user-table-body">
                 {% for user in lobby.players %}
                 <tr>
-                    <td class="px-4 py-2 text-center">{{ user.username }}</td>
-                    <td class="px-4 py-2 text-center">{{ user.get_best_score(lobby.id) }}</td>
+                    <td class="px-4 py-2 ">{{ user.reg_id }}</td>
+                    <td class="px-4 py-2 ">{{ user.username }}</td>
+                    <td class="px-4 py-2 ">{{ user.get_best_score(lobby.id) }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -47,6 +49,7 @@ Lobby - {{ lobby.name }}
 
 {% block scripts %}
 <script>
+    let dataTable;
     function updateUsers() {
         // Make call to admin route to update player info
         fetch(`/admin/update_player_list?lobby_id={{ lobby.id}}`)
@@ -56,24 +59,26 @@ Lobby - {{ lobby.name }}
 
                 // Sort users according to scores
                 data.sort((a, b) => b.best_score - a.best_score);
+
+                // keep only username and best_score
+                data = data.map(user => {
+                    return [
+                        user.reg_id,
+                        user.username,
+                        user.best_score
+                    ]
+                });
                 const tableBody = document.getElementById('user-table-body');
                 tableBody.innerHTML = ''; // Clear existing rows
-                
+                dataTable.clear().rows.add(data).draw();
                 // Create and append new table rows based on fetched data
-                data.forEach(user => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                    <td class="px-4 py-2 text-center">${user.username}</td>
-                    <td class="px-4 py-2 text-center">${user.best_score}</td>
-                `;
-                    tableBody.appendChild(row);
-                });
+                
             });
     }
     setInterval(updateUsers, 1000);
 
     $(document).ready(function () {
-        $('#user-table').DataTable();
+        dataTable = $('#user-table').DataTable();
     });
 </script>
 {%endblock%}

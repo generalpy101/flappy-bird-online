@@ -19,12 +19,12 @@ def login():
             login_user(user)
             flash("Logged in successfully.")
             next_page = request.args.get("next")
-            
+
             if not next_page:
                 if user.is_admin:
-                   next_page = url_for("admin.list_lobbies")
+                    next_page = url_for("admin.list_lobbies")
                 else:
-                     next_page = url_for("player.join_lobby")
+                    next_page = url_for("player.join_lobby")
             return redirect(next_page or url_for("index"))
         else:
             flash("Login failed. Please check your credentials.", "error")
@@ -39,7 +39,7 @@ def register():
         new_user.password = form.password.data
         # Check if username already exists
         if User.query.filter_by(name=form.name.data).first():
-            flash("Username already exists." , "error")
+            flash("Username already exists.", "error")
             return redirect(url_for("auth.register"))
         db.session.add(new_user)
         db.session.commit()

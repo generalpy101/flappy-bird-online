@@ -17,22 +17,24 @@ class Player(db.Model, UserMixin):
         "Lobby", secondary=player_lobby_association, back_populates="players", lazy=True
     )
     scores = db.relationship("Score", backref="user", lazy=True)
-    
+
     def get_best_score(self, lobby_id):
         if not self.scores:
             return 0
-        
+
         lobby_id = int(lobby_id)
 
-        lobby_scores = [score.score for score in self.scores if score.lobby_id == lobby_id]
-        
+        lobby_scores = [
+            score.score for score in self.scores if score.lobby_id == lobby_id
+        ]
+
         try:
             best_score = max(lobby_scores)
         except Exception as e:
             print(e)
             best_score = 0
         return best_score
-    
+
     def to_dict(self):
         return {
             "id": self.id,

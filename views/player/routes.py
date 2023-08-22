@@ -12,15 +12,18 @@ player_bp = Blueprint("player", __name__, template_folder="templates")
 
 LIVES = os.getenv("LIVES") or 10
 
-@player_bp.route("/join_lobby", methods=["GET","POST"])
+
+@player_bp.route("/join_lobby", methods=["GET", "POST"])
 def join_lobby():
     # Default page for player with a form to enter a lobby id
     if request.method == "POST":
         lobby_id = request.form.get("lobby_id")
         reg_id = request.form.get("reg_id")
         username = request.form.get("username")
-        
-        lobby = Lobby.query.filter(Lobby.id == lobby_id, Lobby.is_active == True).first()
+
+        lobby = Lobby.query.filter(
+            Lobby.id == lobby_id, Lobby.is_active == True
+        ).first()
         if lobby:
             # Check if player exists, if not create player
             player = Player.query.filter(Player.reg_id == reg_id).first()
@@ -28,13 +31,17 @@ def join_lobby():
                 player = Player(reg_id=reg_id, username=username)
                 db.session.add(player)
                 db.session.commit()
-            
+
             if player in lobby.players:
-                return redirect(url_for("player.game", lobby_id=lobby_id, player_id=player.id))
+                return redirect(
+                    url_for("player.game", lobby_id=lobby_id, player_id=player.id)
+                )
             # Add user to lobby
             lobby.players.append(player)
             db.session.commit()
-            return redirect(url_for("player.game", lobby_id=lobby_id, player_id=player.id))
+            return redirect(
+                url_for("player.game", lobby_id=lobby_id, player_id=player.id)
+            )
         flash("Lobby does not exist", "error")
     return render_template("game/index.html")
 
@@ -43,12 +50,12 @@ def join_lobby():
 def game():
     lobby_id = request.args.get("lobby_id")
     player_id = request.args.get("player_id")
-    
+
     if lobby_id is None:
         return redirect(url_for("player.join_lobby"))
     else:
         lobby_id = int(lobby_id)
-        
+
     if player_id is None:
         return redirect(url_for("player.join_lobby"))
     else:
@@ -59,19 +66,21 @@ def game():
     if not lobby:
         flash("Lobby does not exist", "error")
         return redirect(url_for("player.join_lobby"))
-    
+
     if player not in lobby.players:
         flash("You are not in this lobby", "error")
         return redirect(url_for("player.join_lobby"))
-    
+
     if len([score for score in player.scores if score.lobby_id == lobby_id]) >= LIVES:
         flash(f"You are only allowed to play {LIVES} games per lobby", "info")
         return redirect(url_for("player.join_lobby"))
-    
+
     # Get user's best score
     best_score = player.get_best_score(lobby_id=lobby_id)
-    
-    return render_template("game/game.html", lobby_id=lobby_id, best_score=best_score, player_id=player_id)
+
+    return render_template(
+        "game/game.html", lobby_id=lobby_id, best_score=best_score, player_id=player_id
+    )
 
 
 @player_bp.route("/player_able_to_play", methods=["GET"])
@@ -91,16 +100,19 @@ def submit_score():
     # Check if lobby exists
     lobby = Lobby.query.filter(Lobby.id == lobby_id, Lobby.is_active == True).first()
     player = Player.query.filter(Player.id == player_id).first()
-    
+
     if lobby:
         # Check if user is already in lobby
         if player not in lobby.players:
             return {"error": "User is not in lobby"}, 400
-        
+
         lobby_id = int(lobby_id)
         player_id = int(player_id)
 
-        if len([score for score in player.scores if score.lobby_id == lobby_id]) >= LIVES:
+        if (
+            len([score for score in player.scores if score.lobby_id == lobby_id])
+            >= LIVES
+        ):
             flash(f"You are only allowed to play {LIVES} games per lobby", "info")
             return {"error": f"User has already played {LIVES} games"}, 400
 

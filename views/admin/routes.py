@@ -40,25 +40,25 @@ def create_lobby():
     return {"error": "Name is required"}, 400
 
 
-@admin_bp.route('/update_lobby_list', methods=['GET'])
+@admin_bp.route("/update_lobby_list", methods=["GET"])
 def update_lobbies_list():
     result = []
-    
+
     # Get the lobby object
     lobbies = Lobby.query.all()
-    
+
     for lobby in lobbies:
         # Get the players in the lobby
         players = lobby.players
-        
+
         # Create a dictionary of the lobby's data
         lobby_data = {
-            'id': lobby.id,
-            'name': lobby.name,
-            'players_count': len(players),
-            'is_active': lobby.is_active
+            "id": lobby.id,
+            "name": lobby.name,
+            "players_count": len(players),
+            "is_active": lobby.is_active,
         }
-        
+
         # Add the lobby's data to the lobby list
         result.append(lobby_data)
 
@@ -66,28 +66,29 @@ def update_lobbies_list():
     return jsonify(result)
 
 
-@admin_bp.route('/update_player_list', methods=['GET'])
+@admin_bp.route("/update_player_list", methods=["GET"])
 def update_players_list():
     args = request.args
-    lobby_id = args.get('lobby_id')
-    
+    lobby_id = args.get("lobby_id")
+
     result = []
-    
+
     # Get the lobby object
     lobby = Lobby.query.filter(Lobby.id == lobby_id, Lobby.is_active == True).first()
-    
+
     # Get the players in the lobby
     players = lobby.players
-    
+
     for player in players:
         # Create a dictionary of the player's data
         best_score = player.get_best_score(lobby_id=lobby_id)
         player_data = {
-            'id': player.id,
-            'username': player.username,
-            'best_score': best_score
+            "id": player.id,
+            "reg_id": player.reg_id,
+            "username": player.username,
+            "best_score": best_score,
         }
-        
+
         # Add the player's data to the player list
         result.append(player_data)
 

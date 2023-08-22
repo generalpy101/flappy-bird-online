@@ -28,7 +28,7 @@ class User(db.Model, UserMixin):
 
     def check_password(self, plaintext_password):
         return bcrypt.check_password_hash(self._password, plaintext_password)
-    
+
     def to_dict(self):
         return {
             "id": self.id,

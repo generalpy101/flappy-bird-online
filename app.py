@@ -45,6 +45,7 @@ def index():
     else:
         return redirect(url_for("player.join_lobby"))
 
+
 @app.route("/test")
 def test():
     return "Hello World!"
