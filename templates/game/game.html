@@ -4,11 +4,29 @@
 
 {%block head%}
 <link rel="stylesheet" href="/static/css/game/style.css">
+<style>
+  #canvas {
+    width: 100%;
+    /* Set canvas width to 100% of its container */
+    height: auto;
+    /* Allow height to adjust proportionally */
+    max-width: 431px;
+    /* Limit maximum width to 431px on larger screens */
+  }
+
+  /* Media query for smaller screens (e.g., mobile devices) */
+  @media (max-width: 768px) {
+    #canvas {
+      max-width: none;
+      /* Reset maximum width */
+    }
+  }
+</style>
 {%endblock%}
 
 {% block content %}
 <header>
-  <h1>Floppy Bird</h1>
+  <h1>Flappy Bird</h1>
   <div class="score-container">
     <div id="bestScore">{{best_score}}</div>
     <div id="currentScore"></div>

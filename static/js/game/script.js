@@ -136,7 +136,7 @@ const render = () => {
           }),
         }).then((res) => res.json()).then((data) => {
           if (data.error) {
-            window.location.href = "/player/join_lobby";
+            window.location.replace("/player/join_lobby")
           }
         });
         setup();
@@ -186,6 +186,8 @@ const render = () => {
 setup();
 img.onload = render;
 
+let lastTimestamp = 0;
+
 // start game
-document.addEventListener("click", () => (gamePlaying = true));
+canvas.addEventListener("click", () => (gamePlaying = true));
 window.onclick = () => (flight = jump);

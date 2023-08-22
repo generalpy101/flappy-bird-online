@@ -15,6 +15,6 @@ class Lobby(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "players": [player.to_dict() for player in self.users],
+            "players": [player.to_dict() for player in self.players],
             "is_active": self.is_active,
         }

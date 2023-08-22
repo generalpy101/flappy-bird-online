@@ -101,6 +101,7 @@ def submit_score():
         player_id = int(player_id)
 
         if len([score for score in player.scores if score.lobby_id == lobby_id]) >= LIVES:
+            flash(f"You are only allowed to play {LIVES} games per lobby", "info")
             return {"error": f"User has already played {LIVES} games"}, 400
 
         # Create score

@@ -17,9 +17,8 @@ Lobby - {{ lobby.name }}
     <h1 class="text-2xl font-semibold mb-4">{{ lobby.name }} Info</h1>
 
     <div class="bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-lg font-semibold mb-2">Lobby Details</h2>
         <p class="text-gray-600 font-bold">ID: {{ lobby.id }}</p>
-        <p class="mt-4">Players: {{ lobby.users|length }}</p>
+        <p class="mt-4 lobby-players">Players: {{ lobby.users|length }}</p>
         <p class="mt-2">Status: {% if lobby.is_active %}Active{% else %}Inactive{% endif %}</p>
     </div>
 
@@ -53,11 +52,13 @@ Lobby - {{ lobby.name }}
         fetch(`/admin/update_player_list?lobby_id={{ lobby.id}}`)
             .then(response => response.json())
             .then(data => {
+                document.querySelector('.lobby-players').innerHTML = `Players: ${data.length}`;
+
                 // Sort users according to scores
-                data.sort((a, b) => b.score - a.score);
+                data.sort((a, b) => b.best_score - a.best_score);
                 const tableBody = document.getElementById('user-table-body');
                 tableBody.innerHTML = ''; // Clear existing rows
-
+                
                 // Create and append new table rows based on fetched data
                 data.forEach(user => {
                     const row = document.createElement('tr');
